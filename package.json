@@ -1,0 +1,37 @@
+{
+  "name": "plug-dj-bot",
+  "version": "0.0.0",
+  "description": "A bot for Plug.dj",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Guttman",
+  "license": "MIT",
+  "dependencies": {
+    "request": "~2.27.0",
+    "ws": "~0.4.31",
+    "uuid": "~1.4.1",
+    "plug-dj-login": "0.0.0"
+  },
+  "devDependencies": {
+    "replay": "~1.9.0",
+    "plugapi": "~0.3.0"
+  },
+  "directories": {
+    "doc": "doc",
+    "example": "examples"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/davidguttman/plug-dj-bot.git"
+  },
+  "keywords": [
+    "plug.dj",
+    "bot"
+  ],
+  "bugs": {
+    "url": "https://github.com/davidguttman/plug-dj-bot/issues"
+  },
+  "homepage": "https://github.com/davidguttman/plug-dj-bot"
+}
