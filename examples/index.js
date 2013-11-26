@@ -18,6 +18,10 @@ pb.on('connect', function() {
   pb.speak('awesome')
 })
 
+pb.on('chat', function(message) {
+  console.log('message', message);
+})
+
 pb.on('disconnect', function() {
   console.log('disconnect!')
 })
@@ -25,4 +29,3 @@ pb.on('disconnect', function() {
 pb.on('data', function(data) {
   console.log('data', data);
 })
-  
