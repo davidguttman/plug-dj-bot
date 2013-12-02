@@ -1,7 +1,7 @@
-var plugLogin = require('plug-dj-login')
 var PlugBot = require('..')
 
-var auth = 'xxx'
+// auth = {usr: '"+dlksjdfl..."'}
+var auth = require('./auth')
 
 var roomName = 'chillout-mixer-ambient-triphop'
 
@@ -15,7 +15,15 @@ pb.on('connect', function() {
   console.log('connected!')
 
   pb.joinRoom(roomName)
-  pb.speak('awesome')
+  // pb.speak('awesome')
+  pb.roomDetails('chillout-mixer-ambient-triphop', function(err, info) {
+    console.log('err', err);
+    console.log('info', info);
+  })
+  pb.mediaSelect(function(err, info) {
+    console.log('err', err);
+    console.log('info', info);
+  })
 })
 
 pb.on('chat', function(message) {
@@ -29,3 +37,4 @@ pb.on('disconnect', function() {
 pb.on('data', function(data) {
   console.log('data', data);
 })
+

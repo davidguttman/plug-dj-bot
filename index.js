@@ -5,12 +5,52 @@ var events = require('events')
 var uuid = require('uuid')
 
 var PlugBot = module.exports = function(auth) {
+  this.auth = auth
   events.EventEmitter.call(this)
-  this.connect(auth)
+  this.cookie = this.createCookie(auth)
+  console.log('this.cookie', this.cookie);
+  this.connect()
   return this
 }
 
 util.inherits(PlugBot, events.EventEmitter)
+
+PlugBot.prototype.mediaSelect = function(cb) {
+  var args = {
+      service: 'media.select'
+    , body: [
+      (new Date(0)).toISOString().replace('T', ' ')
+      // "2013-12-02 01:08:52.739851"
+      ]
+  }
+  this.post('media.select', args, cb)
+}
+
+PlugBot.prototype.roomDetails = function(roomName, cb) {
+  var args = {
+      service: 'room.details'
+    , body: [
+      roomName
+      ]
+  }
+  this.post('room.details', args, cb)
+}
+
+PlugBot.prototype.post = function(path, data, cb) {
+  var opts = {
+        url: 'http://plug.dj/_/gateway/' + path
+      , method: 'POST'
+      , headers: {
+            Cookie: this.cookie
+          , 'Cache-Control': 'max-age=0'
+        }
+      , json: data
+      }
+  request(opts, function(err, res, body) {
+    // console.log('res', res);
+    cb(err, body)
+  })
+}
 
 PlugBot.prototype.joinRoom = function(roomName) {
   var roomOpts = {
@@ -33,10 +73,10 @@ PlugBot.prototype.speak = function(message) {
   this.ws.send('5::/room:'+JSON.stringify(message))
 }
 
-PlugBot.prototype.connect = function(auth, cb) {
+PlugBot.prototype.connect = function() {
   var self = this
 
-  this.getSocketUrl(auth, function(err, socketUrl) {
+  this.getSocketUrl(function(err, socketUrl) {
     if (err) return self.emit('error', err)
 
     self.ws = new WebSocket(socketUrl)
@@ -102,11 +142,11 @@ PlugBot.prototype.parseMessage = function(data) {
     
 }
 
-PlugBot.prototype.getSocketUrl = function(auth, cb) {
+PlugBot.prototype.getSocketUrl = function(cb) {
   var opts = {
       url: 'https://sio2.plug.dj/socket.io/1/?t=' + Date.now()
     , headers: {
-        Cookie: 'usr=' + auth
+        Cookie: this.cookie
     }
   }
 
@@ -122,4 +162,16 @@ PlugBot.prototype.getSocketUrl = function(auth, cb) {
 
 PlugBot.prototype.onHeartbeat = function() {
   this.ws.send('2::')
+}
+
+PlugBot.prototype.createCookie = function(auth) {
+  var cookie = ''
+  for (k in auth) {
+    cookie += k;
+    cookie += '=';
+    cookie += auth[k];
+    cookie += '; ';
+  }
+  return cookie
+
 }
